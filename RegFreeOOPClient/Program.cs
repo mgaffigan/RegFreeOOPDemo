@@ -6,6 +6,9 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
+        using var ActCtx = typeof(IRemoteObject).Assembly.CreateActivationContext();
+        using var context = ActCtx.Enter();
+        
         var child = ComInterop.CreateLocalServer<IRemoteObject>(Guid.Parse(Constants.CLSID_RemoteObject));
         Console.WriteLine("Created");
         child.RegisterCallback(new Callback());
