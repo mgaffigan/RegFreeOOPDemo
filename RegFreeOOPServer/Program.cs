@@ -1,14 +1,20 @@
 ﻿
 using Esatto.Win32.Com;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-
-using var res = new ClassObjectRegistration(Guid.Parse(Constants.CLSID_RemoteObject),
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        using var res = new ClassObjectRegistration(Guid.Parse(Constants.CLSID_RemoteObject),
     ComInterop.CreateClassFactoryFor(() => new RemoteObject()),
     CLSCTX.LOCAL_SERVER, REGCLS.MULTIPLEUSE);
 
-Console.WriteLine("Started");
-Application.Run();
+        Console.WriteLine("Started");
+        Application.Run();
+    }
+}
 
 internal class RemoteObject : IRemoteObject
 {
@@ -24,6 +30,7 @@ internal class RemoteObject : IRemoteObject
     public void RegisterCallback(IRemoteObject o)
     {
         Console.WriteLine("Callback registered");
+        o.Print("Callback registered");
 
         // Yes, I know this is a bad use of thread-pool.  It's just a demo.
         ThreadPool.QueueUserWorkItem(_ =>
