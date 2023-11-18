@@ -10,5 +10,5 @@ public static class Constants
 public interface IRemoteObject
 {
     void Print(string thing);
-    void RegisterCallback(IRemoteObject o);
+    void RegisterCallback(object o);
 }

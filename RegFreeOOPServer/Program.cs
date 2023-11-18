@@ -5,18 +5,19 @@ using System.Windows.Forms;
 
 internal static class Program
 {
+    [STAThread]
     public static void Main(string[] args)
     {
         using var res = new ClassObjectRegistration(Guid.Parse(Constants.CLSID_RemoteObject),
-    ComInterop.CreateClassFactoryFor(() => new RemoteObject()),
-    CLSCTX.LOCAL_SERVER, REGCLS.MULTIPLEUSE);
+            ComInterop.CreateStaClassFactoryFor(() => new RemoteObject()),
+            CLSCTX.LOCAL_SERVER, REGCLS.MULTIPLEUSE);
 
         Console.WriteLine("Started");
         Application.Run();
     }
 }
 
-internal class RemoteObject : IRemoteObject
+internal class RemoteObject : StandardOleMarshalObject, IRemoteObject
 {
     public RemoteObject()
     {
@@ -27,8 +28,9 @@ internal class RemoteObject : IRemoteObject
         Console.WriteLine(thing);
     }
 
-    public void RegisterCallback(IRemoteObject o)
+    public void RegisterCallback(object o2)
     {
+        var o = (IRemoteObject)o2;
         Console.WriteLine("Callback registered");
         o.Print("Callback registered");
 
